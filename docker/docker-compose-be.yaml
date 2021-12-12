@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  backend_be:
+    container_name: backend_be
+    build:
+      context: ../backend
+      dockerfile: Dockerfile_be
+    ports:
+      - 5001:5001
+    volumes:
+      - ../backend/app:/app
+    depends_on:
+      - database_auth
+  database_auth:
+    image: postgres:9.6.24-alpine
+    container_name: database_auth
+    environment:
+      - POSTGRES_DB=zpi
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis_be:
+    image: redis:latest
+    container_name: redis_be
+    command: --port 6381
+    ports: 
+      - 6381:6381
+  pgadmin_be:
+    image: dpage/pgadmin4
+    container_name: pgadmin_be
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.jk
+      - PGADMIN_DEFAULT_PASSWORD=jk
+    volumes:
+      - ../pgadmin:/root/.pgadmin
+    ports:
+      - "5051:80"
+    depends_on:
+      - database_auth

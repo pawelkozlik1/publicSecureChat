@@ -1,0 +1,9 @@
+.Toastify__toast--info {
+    background-color: #ffca28;
+    color: #000000;
+}
+
+.Toastify__toast--error {
+    background-color: #e74c3c;
+    color: #000000;
+}
